@@ -14,7 +14,7 @@ ALLOWED_USERS = set(int(x) for x in os.getenv("ALLOWED_USERS", "").split(",") if
 async def bot_worker(token, all_tokens):
     vk_session = vk_api.VkApi(token=token)
     vk = vk_session.get_api()
-    print(f"[Worker] Запущен для токена {token[:8]}")
+    print("[Worker] Запущен")
 
     # проверка и добавление дефолтного префикса
     prefixes = await get_prefixes(token)
@@ -79,12 +79,12 @@ async def bot_worker(token, all_tokens):
                     try:
                         await COMMANDS[cmd_name](ctx)
                     except Exception as e:
-                        print(f"[Worker {token[:8]} error] Ошибка в команде {cmd_name}: {e}")
+                        print(f"[Worker error] Ошибка в команде {cmd_name}: {e}")
                         traceback.print_exc()
 
             await asyncio.sleep(1)  # пауза между циклами
         except Exception as e:
-            print(f"[Worker {token[:8]} error]: {e}")
+            print(f"[Worker error]: {e}")
             await asyncio.sleep(1)
 
 # ------------------------ Главная функция ------------------------

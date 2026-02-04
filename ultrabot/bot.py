@@ -1,9 +1,14 @@
 import asyncio
+import os
+from dotenv import load_dotenv
 from worker import bot_worker
+from core.decryptor import decrypt_tokens
 
-# Читаем токены из файла
-with open("config/tokens.txt", "r", encoding="utf-8") as f:
-    all_tokens = [line.strip() for line in f if line.strip()]
+load_dotenv()
+
+enc_path = os.path.join("config", "tokens.enc")
+master_key = os.getenv("MASTER_KEY", "")
+all_tokens = decrypt_tokens(enc_path, master_key)
 
 async def main():
     tasks = [asyncio.create_task(bot_worker(t, all_tokens)) for t in all_tokens]

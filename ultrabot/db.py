@@ -1,12 +1,13 @@
 import aiosqlite
 import os
+import hashlib
 
 DB_FOLDER = "dbs"
 os.makedirs(DB_FOLDER, exist_ok=True)
 
 def get_db_path(token):
-    token_short = token[:8]  # первые 8 символов токена
-    return os.path.join(DB_FOLDER, f"db_{token_short}.db")
+    token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+    return os.path.join(DB_FOLDER, f"db_{token_hash}.db")
 
 async def is_user_connected(token: str, user_id: int) -> bool:
     db_path = get_db_path(token)

@@ -4,11 +4,17 @@ import wikipedia
 import psutil
 import sys
 import os
+from dotenv import load_dotenv
 from db import get_prefixes, add_prefix, remove_prefix, get_message_count
 from utils import vk_send
 
 BOT_START_TIME = time.perf_counter()
-ADMIN_TOKENS = ["vk1.a.--hJYHrfUYd2Q8u_RKua6GyfLn91mwNvkU2zgq6MYEkuc7OrMcDQPK7Otvu3P-v0yQhWamn88cuUDJFBVGCs6uBeiLzlMTVOOiqUKLs3hynUqidzxFMi0KYY4qnAOX8Fv8V0aoYwyLKyo2Kv5KdFgKpirYtYkGG_AiehIYva1xIoep672O00fIO6Th9xHzkgasq3YyH3EnAGzje6MRhQ4w"]
+load_dotenv("config/.env")
+ADMIN_IDS = {
+    int(value.strip())
+    for value in os.getenv("ADMIN_IDS", "").split(",")
+    if value.strip().isdigit()
+}
 wikipedia.set_lang("ru")
 COMMANDS = {}
 
@@ -337,7 +343,7 @@ async def time_cmd(ctx):
 
 @command("рестарт")
 async def restart_cmd(ctx):
-    if ctx["token"] not in ADMIN_TOKENS:
+    if ctx["from_id"] not in ADMIN_IDS:
         await vk_send(ctx["vk"], ctx["peer_id"], "❌ Команда доступна только администратору!")
         return
 

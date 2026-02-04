@@ -1,9 +1,15 @@
 import asyncio
+import os
+from dotenv import load_dotenv
 from worker import bot_worker
 
-# Читаем токены из файла
-with open("config/tokens.txt", "r", encoding="utf-8") as f:
-    all_tokens = [line.strip() for line in f if line.strip()]
+load_dotenv()
+
+all_tokens = [
+    token.strip()
+    for token in os.getenv("BOT_TOKENS", "").split(",")
+    if token.strip()
+]
 
 async def main():
     tasks = [asyncio.create_task(bot_worker(t, all_tokens)) for t in all_tokens]
